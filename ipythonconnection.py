@@ -1,3 +1,4 @@
+#I am using the https://github.com/ivanov/vim-ipython as an exmple of connecting to the ipythone kernal
 import socket 
 
 HOST = "127.0.0.1"
