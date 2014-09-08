@@ -14,6 +14,7 @@ iopub_port =49926
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST,8888))
 while True:
+	
 	message = raw_input("Your Message: ") 
 	s.send(message)
 s.close();
