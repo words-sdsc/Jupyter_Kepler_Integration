@@ -97,4 +97,9 @@ class fibonachi():
 		while (True):
 			yield(self.b)
 			slef.a,self.b = self.b,self.a+self.b
+			
+f = fibonachi(0,1)
+for r in f.series():
+	if r>100:break
+	print (r,end='')
 		
