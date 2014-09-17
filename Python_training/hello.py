@@ -108,18 +108,26 @@ for r in f.series():
 	print (r,end='\n')
 
 
-#class inheritance and polymorphisem in python
-
-class AnimalActions:
-	def quack(self): return self.strings['quack']
+#class inheritance 
+class AnimalActions():
+	def quack(self): return self.strings['quacks']
 	def feathers(self):return self.strings['featehrs']
 	def bark(self): return self.strings['bark']
 	def fur(self):return self.strings['fur']
+	def testing(self): print('Testing')
 
 class Duck(AnimalActions):
-	quack = 'Quaaaaaak'
+#we can access the parent class functions by
+# using super keyword.
+	quacks = 'Quaaaaaak'
 	featehrs = 'The duck has gray and white feathers'
+	def testing(self):
+		super().testing()
+		print ("Additional testing")
 
+donald = Duck()
+donald.testing()
+#print(donald.quack())
 #raising custom exception
 def readfile(filename):
 	if filename.endswith('.txt'):
@@ -265,3 +273,14 @@ def test(this,that,other,*args):
 		print(n)
 
 test(1,234,545,6,3,5,6,7)
+
+#working with strings
+print('this is a string'.upper())
+print('this is a string'.capitalize())
+print('This Is a String'.swapcase())
+print('this is a string'.find('is'))
+print('this is a string'.replace('this','that'))
+print('this is a string       '.rstrip())
+print('this is a string\n'.rstrip('\n'))
+print('this is a string       '.strip())
+
