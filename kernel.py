@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/Users/hamid/anaconda/bin/python
 
 #Here is the steps that I have to take
 #1- I have to get the connection info file
@@ -20,8 +20,8 @@ from pprint import pformat
 # zmq specific imports:
 #Adding zmq liberary to the code
 #This path is temperory I have to find a wayt to set it Automatically.
-import os, sys
-sys.path.append('/Users/hamid/anaconda/pkgs/pyzmq-14.3.1-py27_0/lib/python2.7/site-packages/')
+#import os, sys
+#sys.path.append('/Users/hamid/anaconda/pkgs/pyzmq-14.3.1-py27_0/lib/python2.7/site-packages/')
 
 import zmq
 from zmq.eventloop import ioloop, zmqstream
