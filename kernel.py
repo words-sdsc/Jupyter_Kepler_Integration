@@ -6,26 +6,19 @@
 #3-I have to decod the incomming messages and send them to the kepler
 #4- I have to get the results from keple nad send them back to the front end
 
-## General Python imports:
-import sys
-import json
-import hmac
-import uuid
-import errno
-import hashlib
-import datetime
-import threading
-from pprint import pformat
+
 
 # zmq specific imports:
 #Adding zmq liberary to the code
 #This path is temperory I have to find a wayt to set it Automatically.
-#import os, sys
-#sys.path.append('/Users/hamid/anaconda/pkgs/pyzmq-14.3.1-py27_0/lib/python2.7/site-packages/')
-
 import zmq
 from zmq.eventloop import ioloop, zmqstream
 from zmq.error import ZMQError
+
+#importing json to handle messaging
+import json
+# general inofrmation import
+from version_info import Ikepler_version
 
 #Since I am building the new kernal for the new language Ihave to use the 
 #the wire messaging system,for more information :
@@ -54,13 +47,35 @@ and its reply:
   {"status":"ok","execution_count":2,"user_variables":{},"payload":[],"user_expressions":{}}
 ]
 """
+"""
+Zeromq socket descriptions
+REP: The only thing this socket does is receive requests and then reply to them.
+
+REQ: This socket is the opposite of REP - it sends requests and reads replies to them.
+
+PUB: This socket broadcasts (publishes) information to anyone who is listening.
+
+SUB: This socket subscribes to a PUB socket and listens to all its broadcasts.
+
+ROUTER: This socket can be used as a multi-user REP socket. It can receive requests 
+from many other sockets and reply to all of them. ROUTER sockets store the identity 
+of the source of the message before sending the message to the application, and the 
+application receives messages from all origins. When replying to a message, the ROUTER 
+socket will send the reply to the origin of the request.
+
+DEALER: This socket allows round-robin communication between sets of sockets. 
+If a message is sent to a DEALER, the DEALER will send to all connected peers. 
+This allows sets of sockets to communicate without explicit knowledge of all the sockets in the set.
+"""
+# This object holds the kernel name and the version
+ver  = Ikepler_version()
 
 
-__version__ = '0.1'
 
 
 
 
-if __name__ == '__main__':
-    from IPython.kernel.zmq.kernelapp import IPKernelApp
-    IPKernelApp.launch_instance(kernel_class=MyKernel)
+
+
+
+
