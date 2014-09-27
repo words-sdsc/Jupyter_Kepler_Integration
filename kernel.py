@@ -3,29 +3,16 @@
 #Here is the steps that I have to take
 #1- I have to get the connection info file
 #2- I have to get zeromq class and instansiate an object out of it
-#3-I have to decod the incomming messages and send them to the kepler
+#3- I have to decod the incomming messages and send them to the kepler
 #4- I have to get the results from keple nad send them back to the front end
 
-
-
-# zmq specific imports:
-#Adding zmq liberary to the code
-#This path is temperory I have to find a wayt to set it Automatically.
-import zmq
-from zmq.eventloop import ioloop, zmqstream
-from zmq.error import ZMQError
-
-#importing json to handle messaging
-import json
-# general inofrmation import
-from version_info import Ikepler_version
-
-#Since I am building the new kernal for the new language Ihave to use the 
-#the wire messaging system,for more information :
-#http://ipython.org/ipython-doc/dev/development/messaging.html
-#http://stackoverflow.com/questions/16240747/sending-messages-from-other-languages-to-an-ipython-kernel
-#Smaple reqest and repley in Ipython
 """
+Since I am building the new kernal for the new language Ihave to use the 
+the wire messaging system,for more information :
+http://ipython.org/ipython-doc/dev/development/messaging.html
+http://stackoverflow.com/questions/16240747/sending-messages-from-other-languages-to-an-ipython-kernel
+Smaple reqest and repley in Ipython
+
 The request:
 [
   <IDS|MSG>
@@ -46,29 +33,77 @@ and its reply:
   {"dependencies_met":true,"engine":"645fb29f-37ab-40c9-bc01-b7fbfe3c2112","status":"ok","started":"2013-04-27T23:22:13.524114"}
   {"status":"ok","execution_count":2,"user_variables":{},"payload":[],"user_expressions":{}}
 ]
+
+Kernel Sockets
+
+Although ZeroMQ is capable of much more, we are interested only in the sockets that 
+we'll need for communicating with the IPython frontend.
+ The backend should have the following ZeroMQ sockets:
+
+Heartbeat: This is a REP socket which simply echoes anything its given. 
+IPython uses this to check up on the kernel - if the heartbeat port does not respond within a few seconds,
+ IPython assumes the kernel is dead and restarts it (or exits with an error).
+
+Shell, Control: These two ROUTER sockets - which, as far as I can tell, 
+are identical for the purpose of single frontend use - are what IPython
+ uses to query the language backend. Requests for code evaluation, object inspection, 
+ and so on are sent through these sockets, and each request must have a corresponding reply.
+
+Stdin: This ROUTER socket is a socket which the language backend can use to query the frontend for input. 
+For instance, in Python, when raw_input() is used, the Python language backend requests input from the frontend.
+
+IOPub: This PUB socket is used to publish all code output. 
+When a block of code finishes (or partially finishes) running, 
+messages are sent to all subscribed frontends via this socket, so they can display the output. 
+All output is sent via this mechanism - the reply messages on 
+the Shell messages are very simple and only indicate success and failure.
+
 """
-"""
-Zeromq socket descriptions
-REP: The only thing this socket does is receive requests and then reply to them.
 
-REQ: This socket is the opposite of REP - it sends requests and reads replies to them.
+# zmq specific imports:
+#Adding zmq liberary to the code
+#This path is temperory I have to find a wayt to set it Automatically.
+import zmq
+from zmq.eventloop import ioloop, zmqstream
+from zmq.error import ZMQError
 
-PUB: This socket broadcasts (publishes) information to anyone who is listening.
+#importing helper classes.
+#!-----BE VERY CAREFULL I COPPIED THESE CLACESS FROM THE IPYTHON KERNEL VERSION---!
+import io
+import json
+import os
+import shutil
+import sys
 
-SUB: This socket subscribes to a PUB socket and listens to all its broadcasts.
+pjoin = os.path.join
 
-ROUTER: This socket can be used as a multi-user REP socket. It can receive requests 
-from many other sockets and reply to all of them. ROUTER sockets store the identity 
-of the source of the message before sending the message to the application, and the 
-application receives messages from all origins. When replying to a message, the ROUTER 
-socket will send the reply to the origin of the request.
+from IPython.utils.path import get_ipython_dir
+from IPython.utils.py3compat import PY3
+from IPython.utils.traitlets import HasTraits, List, Unicode, Dict, Any
+from .launcher import make_ipkernel_cmd
 
-DEALER: This socket allows round-robin communication between sets of sockets. 
-If a message is sent to a DEALER, the DEALER will send to all connected peers. 
-This allows sets of sockets to communicate without explicit knowledge of all the sockets in the set.
-"""
+
+# general inofrmation import
+from version_info import Ikepler_version
+
+
+if os.name == 'nt':
+    programdata = os.environ.get('PROGRAMDATA', None)
+    if programdata:
+        SYSTEM_KERNEL_DIRS = [pjoin(programdata, 'ipython', 'kernels')]
+    else:  # PROGRAMDATA is not defined by default on XP.
+        SYSTEM_KERNEL_DIRS = []
+else:
+    SYSTEM_KERNEL_DIRS = ["/usr/share/ipython/kernels",
+                          "/usr/local/share/ipython/kernels",
+                         ]
+
+
 # This object holds the kernel name and the version
 ver  = Ikepler_version()
+
+#getting the connection info file from the conda.
+_connection_information
 
 
 
