@@ -24,10 +24,12 @@ This command will redirect any stdout due to the command execution to ~/Desktop/
 
 ./kepler.sh -runwf -nogui -NUM1 15 -redirectgui ~/Desktop ~/Desktop/addMod2.kar | tee > ~/Desktop/exe.txt ; cat ~/Desktop/addMod2.MonitorValue.txt
 '''
-def load_ipython_extension(ipython):
-    # The `ipython` argument is the currently active `InteractiveShell`
-    # instance, which can be used in any way. This allows you to register
-    # new magics or aliases, for example.
+import os
 
-def unload_ipython_extension(ipython):
-    # If you want your extension to be unloadable, put that logic here.
+class Kepler_Magic(magics):
+	kepler_path
+	def __init__(self):
+		
+	def whichos(self):
+
+	def SetKeplerPath(self,path):
