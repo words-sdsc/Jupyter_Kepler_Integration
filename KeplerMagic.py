@@ -1,4 +1,4 @@
-#!/Users/Nick/anaconda/lib/python2.7
+#!/Users/hamid/anaconda/bin/python
 # myextension.py
 
 
@@ -24,12 +24,27 @@ This command will redirect any stdout due to the command execution to ~/Desktop/
 
 ./kepler.sh -runwf -nogui -NUM1 15 -redirectgui ~/Desktop ~/Desktop/addMod2.kar | tee > ~/Desktop/exe.txt ; cat ~/Desktop/addMod2.MonitorValue.txt
 '''
-import os
+import platform
+import subprocess 
 
-class Kepler_Magic(magics):
-	kepler_path
+class Kepler_Magic():
+	_kepler_path = ''
+
 	def __init__(self):
+		_kepler_path = '/Applications/Kepler-2.4/Kepler.app/Contents/Resources/Java/kepler.sh'
+		if self.whichos() == 'Darwin':
+			print('Nothing yet')
+		
 		
 	def whichos(self):
+		return platform.system()
 
 	def SetKeplerPath(self,path):
+		_kepler_path = path
+		
+	def runkepler(self):
+		print(subprocess.check_output([self._kepler_path]))
+
+test =  Kepler_Magic()
+
+test.runkepler()
