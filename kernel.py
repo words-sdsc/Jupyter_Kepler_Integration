@@ -113,11 +113,13 @@ pjoin = os.path.join
 from IPython.utils.path import get_ipython_dir
 from IPython.utils.py3compat import PY3
 from IPython.utils.traitlets import HasTraits, List, Unicode, Dict, Any
-from .launcher import make_ipkernel_cmd
+#from .launcher import make_ipkernel_cmd
 
 
 # general inofrmation import
 from version_info import Ikepler_version
+#importing the socket holder class 
+from socketinfo import zmqsockets
 
 
 if os.name == 'nt':
@@ -135,8 +137,16 @@ else:
 # This object holds the kernel name and the version
 ver  = Ikepler_version()
 
+
+#Instantiating socket class
+skt = zmqsockets()
+print (skt.IOPub)
+skt.IOPub = 'new value'
+print (skt.IOPub)
+
+
 #getting the connection info file from the conda.
-_connection_information
+_connection_information = ''
 
 
 
