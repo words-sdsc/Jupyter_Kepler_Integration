@@ -1,9 +1,9 @@
-#!/usr/local/bin/python3
+#!/Users/Nick/anaconda/lib/python2.7
 
 #Here is the steps that I have to take
 #1- I have to get the connection info file
 #2- I have to get zeromq class and instansiate an object out of it
-#3-I have to decod the incomming messages and send them to the kepler
+#3- I have to decod the incomming messages and send them to the kepler
 #4- I have to get the results from keple nad send them back to the front end
 
 ## General Python imports:
@@ -21,11 +21,15 @@ from pprint import pformat
 #Adding zmq liberary to the code
 #This path is temperory I have to find a wayt to set it Automatically.
 import os, sys
-sys.path.append('/Users/hamid/anaconda/pkgs/pyzmq-14.3.1-py27_0/lib/python2.7/site-packages/')
+#sys.path.append('/Users/Nick/anaconda/pkgs/pyzmq-14.3.1-py27_0/lib/python2.7/site-packages/zmq')
 
 import zmq
-from zmq.eventloop import ioloop, zmqstream
-from zmq.error import ZMQError
+#from zmq.eventloop import ioloop, zmqstream
+#from zmq.error import ZMQError
+
+
+#Kepler helper classes
+import version
 
 #Since I am building the new kernal for the new language Ihave to use the 
 #the wire messaging system,for more information :
@@ -61,6 +65,8 @@ __version__ = '0.1'
 
 
 
-if __name__ == '__main__':
-    from IPython.kernel.zmq.kernelapp import IPKernelApp
-    IPKernelApp.launch_instance(kernel_class=MyKernel)
+
+
+#if __name__ == '__main__':
+#    from IPython.kernel.zmq.kernelapp import IPKernelApp
+#   IPKernelApp.launch_instance(kernel_class=MyKernel)
