@@ -24,26 +24,43 @@ This command will redirect any stdout due to the command execution to ~/Desktop/
 
 ./kepler.sh -runwf -nogui -NUM1 15 -redirectgui ~/Desktop ~/Desktop/addMod2.kar | tee > ~/Desktop/exe.txt ; cat ~/Desktop/addMod2.MonitorValue.txt
 '''
+
+
+'''
+1- I have to get the kepler path based on operating system and set it to default
+2- I have to set the flag for the users to be able to change the path
+3- I have to use try catch so if I get permission denied I will be able to change the file permision then run the app again
+4- Then I will be ready to pass the parameters and values to the 
+'''
 import platform
+import os
 import subprocess 
 
 class Kepler_Magic():
-	_kepler_path = ''
+	_PreKeplerPath = ''
+	_KeplerPath = 'Kepler-2.4/Kepler.app/Contents/Resources/Java/kepler.sh'
 
 	def __init__(self):
-		_kepler_path = '/Applications/Kepler-2.4/Kepler.app/Contents/Resources/Java/kepler.sh'
+		
 		if self.whichos() == 'Darwin':
-			print('Nothing yet')
+			print('correct')
+			_PreKeplerPath = '$HOME/../../Applications/'
+			for root,dirs,files in os.walk('$HOME'):
+				print(root)
+				print(dirs)
+				print(files)
 		
 		
 	def whichos(self):
 		return platform.system()
 
 	def SetKeplerPath(self,path):
-		_kepler_path = path
+		_KeplerPath = path
 		
 	def runkepler(self):
-		print(subprocess.check_output([self._kepler_path]))
+		print('')
+		#print(subprocess.check_output([self._KeplerPath]))
+
 
 test =  Kepler_Magic()
 
