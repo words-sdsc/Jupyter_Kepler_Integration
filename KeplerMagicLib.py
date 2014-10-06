@@ -45,7 +45,6 @@ class Kepler_Magic():
 	def __init__(self):
 		
 		if self.whichOs() == 'Darwin':
-			print('correct')
 			_PreKeplerPath = '$HOME/../../Applications/'
 			#for root,dirs,files in os.walk('/Applications/Kepler-2.4/Kepler.app/Contents/Resources/Java'):
 				#print(root)
@@ -71,10 +70,11 @@ class Kepler_Magic():
  		TempRead = ''
  		for line in FileToread.readlines():
  			TempRead += line
+		return TempRead
 	def removeKeplerOutputFile(self):
 		os.remove('/Users/hamid/Desktop/simpleadd.Display.txt')
 
-test =  Kepler_Magic()
+#test =  Kepler_Magic()
 
-test.runKepler(test._PreKeplerPath,test._KeplerPath,test._WorkFlowPath,test._TargetFilePath, FirstParam = 15)
-test.readKeplerOutput()
+#test.runKepler(test._PreKeplerPath,test._KeplerPath,test._WorkFlowPath,test._TargetFilePath, FirstParam = 15)
+#test.readKeplerOutput()
