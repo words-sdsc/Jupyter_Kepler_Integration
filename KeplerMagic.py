@@ -37,8 +37,10 @@ import os
 import subprocess 
 
 class Kepler_Magic():
-	_PreKeplerPath = ''
-	_KeplerPath = 'Kepler-2.4/Kepler.app/Contents/Resources/Java/kepler.sh'
+	_PreKeplerPath = '/Applications/Kepler-2.4'
+	_KeplerPath = '/Kepler.app/Contents/Resources/Java/kepler.sh'
+	_WorkFlowPath = '~/Desktop/simpleadd.kar'
+	_TargetFilePath = '/Users/hamid/Desktop'
 
 	def __init__(self):
 		
@@ -57,12 +59,17 @@ class Kepler_Magic():
 	def SetKeplerPath(self,path):
 		_KeplerPath = path
 		
-	def runkepler(self):
-		os.system('/Applications/Kepler-2.4/Kepler.app/Contents/Resources/Java/kepler.sh -runwf -nogui -FirstParam 15 -redirectgui /Users/hamid/Desktop ~/Desktop/simpleadd.kar')
+	def runkepler(self,_PreKeplerPath,_KeplerPath,_WorkFlowPath,_TargetFilePath,**kwargs):
+		#os.system('/Applications/Kepler-2.4/Kepler.app/Contents/Resources/Java/kepler.sh -runwf -nogui -FirstParam 15 -redirectgui /Users/hamid/Desktop ~/Desktop/simpleadd.kar')
+		for KeplerParam,KeplerParamValue in kwargs:
+			print(KeplerParam)
+			Print(KeplerParamValue)
+		#os.system(_PreKeplerPath+_KeplerPath+' -runwf -nogui -FirstParam 15 -redirectgui '+_TargetFilePath+' '+_WorkFlowPath)
+ 
 		#This command seems not to work and python limits it
 		#subprocess.call(['/Applications/Kepler-2.4/Kepler.app/Contents/Resources/Java/kepler.sh', '-runwf', '-nogui' ,'-FirstParam' ,'15','-redirectgui','/Users/hamid/Desktop' ,'~/Desktop/simpleadd.kar'],shell= True)
 
 
 test =  Kepler_Magic()
 
-test.runkepler()
+test.runkepler(test._PreKeplerPath,test._KeplerPath,test._WorkFlowPath,test._TargetFilePath, FirstParam = 15, secondparam = 66)
