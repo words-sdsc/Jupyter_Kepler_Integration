@@ -45,10 +45,10 @@ class Kepler_Magic():
 		if self.whichos() == 'Darwin':
 			print('correct')
 			_PreKeplerPath = '$HOME/../../Applications/'
-			for root,dirs,files in os.walk('$HOME'):
-				print(root)
-				print(dirs)
-				print(files)
+			#for root,dirs,files in os.walk('/Applications/Kepler-2.4/Kepler.app/Contents/Resources/Java'):
+				#print(root)
+				#print(dirs)
+				#print(files)
 		
 		
 	def whichos(self):
@@ -58,8 +58,9 @@ class Kepler_Magic():
 		_KeplerPath = path
 		
 	def runkepler(self):
-		print('')
-		#print(subprocess.check_output([self._KeplerPath]))
+		os.system('/Applications/Kepler-2.4/Kepler.app/Contents/Resources/Java/kepler.sh -runwf -nogui -FirstParam 15 -redirectgui /Users/hamid/Desktop ~/Desktop/simpleadd.kar')
+		#This command seems not to work and python limits it
+		#subprocess.call(['/Applications/Kepler-2.4/Kepler.app/Contents/Resources/Java/kepler.sh', '-runwf', '-nogui' ,'-FirstParam' ,'15','-redirectgui','/Users/hamid/Desktop' ,'~/Desktop/simpleadd.kar'],shell= True)
 
 
 test =  Kepler_Magic()
