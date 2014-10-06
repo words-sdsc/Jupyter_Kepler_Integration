@@ -44,7 +44,7 @@ class Kepler_Magic():
 
 	def __init__(self):
 		
-		if self.whichos() == 'Darwin':
+		if self.whichOs() == 'Darwin':
 			print('correct')
 			_PreKeplerPath = '$HOME/../../Applications/'
 			#for root,dirs,files in os.walk('/Applications/Kepler-2.4/Kepler.app/Contents/Resources/Java'):
@@ -53,23 +53,28 @@ class Kepler_Magic():
 				#print(files)
 		
 		
-	def whichos(self):
+	def whichOs(self):
 		return platform.system()
 
-	def SetKeplerPath(self,path):
+	def setKeplerPath(self,path):
 		_KeplerPath = path
 		
-	def runkepler(self,_PreKeplerPath,_KeplerPath,_WorkFlowPath,_TargetFilePath,**kwargs):
+	def runKepler(self,_PreKeplerPath,_KeplerPath,_WorkFlowPath,_TargetFilePath,**kwargs):
+		#This is the pure command
 		#os.system('/Applications/Kepler-2.4/Kepler.app/Contents/Resources/Java/kepler.sh -runwf -nogui -FirstParam 15 -redirectgui /Users/hamid/Desktop ~/Desktop/simpleadd.kar')
-		for KeplerParam,KeplerParamValue in kwargs:
-			print(KeplerParam)
-			Print(KeplerParamValue)
-		#os.system(_PreKeplerPath+_KeplerPath+' -runwf -nogui -FirstParam 15 -redirectgui '+_TargetFilePath+' '+_WorkFlowPath)
- 
-		#This command seems not to work and python limits it
-		#subprocess.call(['/Applications/Kepler-2.4/Kepler.app/Contents/Resources/Java/kepler.sh', '-runwf', '-nogui' ,'-FirstParam' ,'15','-redirectgui','/Users/hamid/Desktop' ,'~/Desktop/simpleadd.kar'],shell= True)
-
+		TempArgumentHolder =''
+		for KeplerParam in kwargs:
+			TempArgumentHolder += '-'+KeplerParam+' '+str(kwargs[KeplerParam])+' '	
+		os.system(_PreKeplerPath+_KeplerPath+' -runwf -nogui '+TempArgumentHolder+'-redirectgui '+_TargetFilePath+' '+_WorkFlowPath)
+ 	def readKeplerOutput(self):
+ 		FileToread = open('/Users/hamid/Desktop/simpleadd.Display.txt')
+ 		TempRead = ''
+ 		for line in FileToread.readlines():
+ 			TempRead += line
+	def removeKeplerOutputFile(self):
+		os.remove('/Users/hamid/Desktop/simpleadd.Display.txt')
 
 test =  Kepler_Magic()
 
-test.runkepler(test._PreKeplerPath,test._KeplerPath,test._WorkFlowPath,test._TargetFilePath, FirstParam = 15, secondparam = 66)
+test.runKepler(test._PreKeplerPath,test._KeplerPath,test._WorkFlowPath,test._TargetFilePath, FirstParam = 15)
+test.readKeplerOutput()
