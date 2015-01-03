@@ -1,15 +1,8 @@
 #!/usr/bin/env python3
 # encoding: UTF-8
 
-import sys
-import os
-import shutil
-import platform
-
-
 
 from distutils.core import setup
-from KeplerMagicLib import Kepler_Magic
 
 desc = """\
 iPython Kepler Magic Function
