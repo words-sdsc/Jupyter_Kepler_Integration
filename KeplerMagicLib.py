@@ -10,36 +10,35 @@ Switch to redirect any display output in the workflow to a DirPath:
 This command will redirect any stdout due to the command execution to ~/Desktop/exe.txt and display the output of the workflow on console: 
 
 ./kepler.sh -runwf -nogui -NUM1 15 -redirectgui ~/Desktop ~/Desktop/addMod2.kar | tee > ~/Desktop/exe.txt ; cat ~/Desktop/addMod2.MonitorValue.txt
-
-2- I have to set the flag for the users to be able to change the path
-3- I have to use try catch so if I get permission denied I will be able to change the file permision then run the app again 
 '''
-import platform
 import os
-import subprocess 
+import Image
 
 class Kepler_Magic():
-	def runKepler(self,KeplerPath,WorkFlowPath,TargetFilePath,**kwargs):
-		TempArgumentHolder =''
-		for KeplerParam in kwargs:
-			TempArgumentHolder += '-'+KeplerParam+' '+str(kwargs[KeplerParam])+' '
-		if os.path.isfile(KeplerPath):		
-			os.system(KeplerPath+' -runwf -nogui '+TempArgumentHolder+'-redirectgui '+TargetFilePath+' '+WorkFlowPath)
-		else:
-			return 0
- 	def readKeplerOutput(self):
+	
+	def runKepler(self,KeplerPath,WorkFlowPath,TargetFilePath,parameters):
+		self.TargetFilekepler = TargetFilePath
+		if os.path.isfile(str(KeplerPath)):		
+			os.system(KeplerPath+' -runwf -nogui '+parameters+'-redirectgui '+TargetFilePath+' '+WorkFlowPath)
+ 	
+ 	def readKeplerOutput(self,TargetFilekepler):
  		TempRead = ''
- 		try:
- 			FileToread = open('/Users/hamid/Desktop/simpleadd.Display.txt')
-	 		for line in FileToread.readlines():
-	 			TempRead += line
-	 	except IOError as e:
-	 		TempRead = "Cannot open output file". format(e)
-		
+ 		if  self.TargetFilekepler != '':
+	 		try:
+	 			if TargetFilekepler.endswith('.txt'):
+	 				FileToread = open(TargetFilekepler)
+			 		for line in FileToread.readlines():
+			 			TempRead += line
+			 	elif TargetFilekepler.endswith('.png'):
+			 		TempRead = Image.open(TargetFilekepler)
+		 	except IOError as e:
+		 		TempRead = "Cannot open output file". format(e)
+		else:
+			TempRead = "File not found!!"
 		return TempRead
-	def removeKeplerOutputFile(self):
-		if os.path.isfile('/Users/hamid/Desktop/simpleadd.Display.txt'):
-			os.remove('/Users/hamid/Desktop/simpleadd.Display.txt')
+	def removeKeplerOutputFile(self,TargetFilekepler):
+		if os.path.isfile(TargetFilekepler):
+			os.remove(self.TargetFilekepler)
 
 #We do not have main function in this file,
 #this line is here in case main will be added in future

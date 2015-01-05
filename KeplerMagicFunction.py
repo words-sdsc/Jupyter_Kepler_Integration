@@ -1,4 +1,5 @@
 
+import argparse
 from IPython.core.magic import (Magics, magics_class, line_magic,
                                 cell_magic, line_cell_magic) 
 from KeplerMagicLib import Kepler_Magic
@@ -8,36 +9,32 @@ class KeplerMagic(Magics):
 	KeplerPath     = ''
 	WorkFlowPath   = ''
 	TargetFilePath = ''
-	
+	wk =  Kepler_Magic()
 	@line_magic
-	def Kepler(self,line,**kwargs):
-		Wk =  Kepler_Magic()
-		paramHolder = ''
-		for k in kwargs:
-			paramHolder += k +' = ' + kwargs[k]
+	def Kepler(self,line):
+		paramHolder = str(line)
 		result = 1
-		result = wk.runKepler(self.KeplerPath,self.WorkFlowPath,self.TargetFilePath, FirstParam = 15)
-		if result:
-			line = wk.readKeplerOutput()
-			wk.removeKeplerOutputFile()
-		else:
-			line = self.KeplerPath
-			#line = self.KeplerPath+"Kepler Path is not correct. Please correct it using KeplerConfig magic function"
-		return line
+		self.wk.runKepler(self.KeplerPath,self.WorkFlowPath,self.TargetFilePath, paramHolder)
 	
 	@line_magic
-	def KeplerConfig(self,line,**kwargs):
-		for c in kwargs:
-			if c == "KeplerPath"    :
-				self.KeplerPath     = kwargs[c]
-			if c == "WorkFlowPath"  :
-				self.WorkFlowPath   = kwargs[c]
-			if c == "TargetFilePath":
-				self.TargetFilePath = kwargs[c]
-		#line  = "Function Config sucess. you can run your workflow"
-		line = kwargs['KeplerPath']
+	def readoutput(self,line):
+		line = self.wk.readKeplerOutput(self.TargetFilePath+line)
+		self.wk.removeKeplerOutputFile(self.TargetFilePath+line)
 		return line
+	@line_magic
+	def KeplerPathConfig(self,line):
+		if line :
+			self.KeplerPath = line
 
+	@line_magic
+	def WkPathConfig(self,line):	
+		if line:
+			self.WorkFlowPath = line
+
+	@line_magic
+	def TgPathConfig(self,line):
+		if line:
+			self.TargetFilePath = line
 
 ip = get_ipython()
 ip.register_magics(KeplerMagic)
