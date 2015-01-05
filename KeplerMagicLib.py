@@ -12,10 +12,10 @@ This command will redirect any stdout due to the command execution to ~/Desktop/
 ./kepler.sh -runwf -nogui -NUM1 15 -redirectgui ~/Desktop ~/Desktop/addMod2.kar | tee > ~/Desktop/exe.txt ; cat ~/Desktop/addMod2.MonitorValue.txt
 '''
 import os
-import Image
+from IPython.display import Image
 
 class Kepler_Magic():
-	
+	TargetFilekepler = ''
 	def runKepler(self,KeplerPath,WorkFlowPath,TargetFilePath,parameters):
 		self.TargetFilekepler = TargetFilePath
 		if os.path.isfile(str(KeplerPath)):		
@@ -30,7 +30,8 @@ class Kepler_Magic():
 			 		for line in FileToread.readlines():
 			 			TempRead += line
 			 	elif TargetFilekepler.endswith('.png'):
-			 		TempRead = Image.open(TargetFilekepler)
+			 		#This is iPython class, do not use it outside
+			 		TempRead = Image(filename=TargetFilekepler)
 		 	except IOError as e:
 		 		TempRead = "Cannot open output file". format(e)
 		else:
