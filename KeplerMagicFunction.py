@@ -18,9 +18,9 @@ class KeplerMagic(Magics):
 	
 	@line_magic
 	def readoutput(self,line):
-		line = self.wk.readKeplerOutput(self.TargetFilePath+line)
-		self.wk.removeKeplerOutputFile(self.TargetFilePath+line)
-		return line
+		result = self.wk.readKeplerOutput(self.TargetFilePath+line)
+		#self.wk.removeKeplerOutputFile(self.TargetFilePath+line)
+		return result
 	@line_magic
 	def KeplerPathConfig(self,line):
 		if line :
