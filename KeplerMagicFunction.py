@@ -12,9 +12,20 @@ class KeplerMagic(Magics):
 	wk =  Kepler_Magic()
 	@line_magic
 	def Kepler(self,line):
+		if self.KeplerPath =='':
+			if os.path.isfile('kppath.txt'):
+				fh = open('kppath.txt','r')
+				self.KeplerPath  = fh.readline()
+		
 		paramHolder = str(line)
-		result = 1
-		self.wk.runKepler(self.KeplerPath,self.WorkFlowPath,self.TargetFilePath, paramHolder)
+		
+		if os.path.isfile(self.WorkFlowPath):
+			if os.path.isfile(self.KeplerPath):
+				self.wk.runKepler(self.KeplerPath,self.WorkFlowPath,self.TargetFilePath, paramHolder)
+			else:
+				return "Please specify Kepler path with KpConf kepler path"
+		else:
+			return "Please specify workflwo path with WpConf workflwo path"
 	
 	@line_magic
 	def readoutput(self,line):
@@ -22,12 +33,20 @@ class KeplerMagic(Magics):
 		#self.wk.removeKeplerOutputFile(self.TargetFilePath+line)
 		return result
 	@line_magic
-	def KeplerPathConfig(self,line):
+	def KpConf(self,line):
 		if line :
+			try:
+				fh =  open('kppath.txt','w+')
+				fh.truncate()
+			except IOError as e:
+				Error =  "Cannot creat/open kepler path file"
+			
+			fh.write(line)
+			fh.close()
 			self.KeplerPath = line
 
 	@line_magic
-	def WkPathConfig(self,line):	
+	def WpConf(self,line):	
 		if line:
 			self.WorkFlowPath = line
 
