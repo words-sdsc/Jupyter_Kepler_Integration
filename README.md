@@ -16,9 +16,8 @@ This app will integrate kepler workflows with ipython notebooks.
 #Instructions
 
 * First Import KeplerMagic
-* Set the location of kepler.sh : %KeplerPathConfig path to kepler.sh
-* Set workFlow Path: %WkPathConfig WorkFlowPath
-* Set where to save the output: %TgPathConfig oytput path
+* Set the location of kepler.sh : %KpConf path to kepler.sh (You need to run this command only one time!)
+* Set workFlow Path: %WpConf WorkFlowPath
 * Run workflow with any parameters: %Kepler parameters
 * Read the output to the notebook: %readoutput output file name
 
