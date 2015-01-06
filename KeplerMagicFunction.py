@@ -29,8 +29,9 @@ class KeplerMagic(Magics):
 	
 	@line_magic
 	def readoutput(self,line):
-		result = self.wk.readKeplerOutput(self.TargetFilePath+line)
-		#self.wk.removeKeplerOutputFile(self.TargetFilePath+line)
+		result = self.wk.readKeplerOutput(self.TargetFilePath+'/'+line)
+		#It seems it has a problem with removing the output file!!
+		#self.wk.removeKeplerOutputFile(self.TargetFilePath+'/'+line)
 		return result
 	@line_magic
 	def KpConf(self,line):
@@ -38,20 +39,21 @@ class KeplerMagic(Magics):
 			try:
 				fh =  open('kppath.txt','w+')
 				fh.truncate()
+				fh.write(line)
+				fh.close()
 			except IOError as e:
 				Error =  "Cannot creat/open kepler path file"
-			
-			fh.write(line)
-			fh.close()
 			self.KeplerPath = line
 
 	@line_magic
 	def WpConf(self,line):	
 		if line:
+			if self.TargetFilePath == '':
+				self.TargetFilePath =  os.path.dirname(os.path.realpath(line))
 			self.WorkFlowPath = line
 
 	@line_magic
-	def TgPathConfig(self,line):
+	def TgConf(self,line):
 		if line:
 			self.TargetFilePath = line
 
