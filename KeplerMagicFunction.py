@@ -1,4 +1,7 @@
 
+'''
+If we want only one function with different parameters, we have to use  argparse
+'''
 import argparse
 from IPython.core.magic import (Magics, magics_class, line_magic,
                                 cell_magic, line_cell_magic) 
