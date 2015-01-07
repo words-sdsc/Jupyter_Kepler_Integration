@@ -24,5 +24,5 @@ setup(name='KeplerMagic',
       author_email= 'stavakol@ucsd.edu',
       url='https://github.com/hamidre13/IPython-Kepler-Magic-Function',
       long_description=desc,
-      py_modules=['KeplerMagicLib','KeplerMagicFunction'],
+      py_modules=['KeplerMagicFunction','KeplerMagicLib'],
       )

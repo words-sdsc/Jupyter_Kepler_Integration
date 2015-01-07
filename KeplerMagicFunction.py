@@ -1,4 +1,4 @@
-
+import os
 import argparse
 from IPython.core.magic import (Magics, magics_class, line_magic,
                                 cell_magic, line_cell_magic) 
@@ -59,3 +59,4 @@ class KeplerMagic(Magics):
 
 ip = get_ipython()
 ip.register_magics(KeplerMagic)
+
