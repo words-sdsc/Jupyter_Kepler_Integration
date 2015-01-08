@@ -36,7 +36,11 @@ class KeplerMagic(Magics):
 		result = self.wk.readKeplerOutput(self.TargetFilePath+'/'+line)
 		#It seems it has a problem with removing the output file!!
 		#self.wk.removeKeplerOutputFile(self.TargetFilePath+'/'+line)
-		return result
+		if line.endswith('.png'):
+			return result
+		else:
+			print result
+		
 	@line_magic
 	def KpConf(self,line):
 		if line :
