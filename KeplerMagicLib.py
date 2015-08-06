@@ -17,7 +17,7 @@ from IPython.display import Image
 class Kepler_Magic():
 	def runKepler(self,KeplerPath,WorkFlowPath,TargetFilePath,parameters):
 		if os.path.isfile(str(KeplerPath)):		
-			os.system(KeplerPath+' -runwf -nogui '+parameters+'-redirectgui '+TargetFilePath+' '+WorkFlowPath)
+			os.system(KeplerPath+' -runwf -nogui '+parameters+' -redirectgui '+TargetFilePath+' '+WorkFlowPath)
  	
  	def readKeplerOutput(self,TargetFilekepler):
  		TempRead = ''
