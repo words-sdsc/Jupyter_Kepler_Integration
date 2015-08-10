@@ -12,7 +12,7 @@ This command will redirect any stdout due to the command execution to ~/Desktop/
 ./kepler.sh -runwf -nogui -NUM1 15 -redirectgui ~/Desktop ~/Desktop/addMod2.kar | tee > ~/Desktop/exe.txt ; cat ~/Desktop/addMod2.MonitorValue.txt
 '''
 import os, glob
-from IPython.display import Image
+from IPython.display import Image 
 
 class Kepler_Magic():
 	def runKepler(self,KeplerPath,WorkFlowPath,TargetFilePath,parameters):

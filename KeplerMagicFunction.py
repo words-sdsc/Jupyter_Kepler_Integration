@@ -2,11 +2,13 @@
 '''
 If we want only one function with different parameters, we have to use  argparse
 '''
+from __future__ import print_function
 import os
 import argparse
 from IPython.core.magic import (Magics, magics_class, line_magic,
                                 cell_magic, line_cell_magic) 
-from KeplerMagicLib import Kepler_Magic
+from KeplerMagicLib import Kepler_Magic 
+
 
 @magics_class
 class KeplerMagic(Magics):
@@ -39,7 +41,7 @@ class KeplerMagic(Magics):
 		if line.endswith('.png'):
 			return result
 		else:
-			print result
+			print(result)
 		
 	@line_magic
 	def KpConf(self,line):
