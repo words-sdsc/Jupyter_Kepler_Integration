@@ -1,0 +1,171 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE entity PUBLIC "-//UC Berkeley//DTD MoML 1//EN"
+    "http://ptolemy.eecs.berkeley.edu/xml/dtd/MoML_1.dtd">
+<entity name="chisquare-plot" class="ptolemy.actor.TypedCompositeActor">
+    <property name="_createdBy" class="ptolemy.kernel.attributes.VersionAttribute" value="11.0.devel">
+    </property>
+    <property name="derivedFrom" class="org.kepler.moml.NamedObjIdReferralList">
+    </property>
+    <property name="entityId" class="org.kepler.moml.NamedObjId" value="urn:lsid:kepler-project.org/ns/:79342:75:17">
+    </property>
+    <property name="SDF Director" class="ptolemy.domains.sdf.kernel.SDFDirector">
+        <property name="localClock" class="ptolemy.actor.LocalClock">
+            <property name="globalTimeResolution" class="ptolemy.actor.parameters.SharedParameter" value="1.0E-10">
+            </property>
+            <property name="clockRate" class="ptolemy.data.expr.Parameter" value="1.0">
+            </property>
+        </property>
+        <property name="iterations" class="ptolemy.data.expr.Parameter" value="100">
+        </property>
+        <property name="vectorizationFactor" class="ptolemy.data.expr.Parameter" value="1">
+        </property>
+        <property name="allowDisconnectedGraphs" class="ptolemy.data.expr.Parameter" value="false">
+        </property>
+        <property name="allowRateChanges" class="ptolemy.data.expr.Parameter" value="false">
+        </property>
+        <property name="constrainBufferSizes" class="ptolemy.data.expr.Parameter" value="true">
+        </property>
+        <property name="period" class="ptolemy.data.expr.Parameter" value="0.0">
+        </property>
+        <property name="synchronizeToRealTime" class="ptolemy.data.expr.Parameter" value="false">
+        </property>
+        <property name="Scheduler" class="ptolemy.domains.sdf.kernel.SDFScheduler">
+            <property name="constrainBufferSizes" class="ptolemy.data.expr.Parameter" value="constrainBufferSizes">
+            </property>
+        </property>
+<property name="KeplerDocumentation" class="ptolemy.vergil.basic.KeplerDocumentationAttribute">
+<property name="description" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>null</configure></property>
+<property name="author" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>Steve Neuendorffer</configure></property>
+<property name="version" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>null</configure></property>
+<property name="userLevelDocumentation" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>&#10;&lt;p&gt;The SDF Director is often used to oversee fairly simple, sequential workflows in which the director can determine the order of actor invocation from the workflow. Types of workflows that would run well under an SDF Director include processing and reformatting tabular data, converting one data type to another, and reading and plotting a series of data points. A workflow in which an image is read, processed (rotated, scaled, clipped, filtered, etc.), and then displayed, is also an example of a sequential workflow that requires a director simply to ensure that each actor fires in the proper order (i.e., that each actor executes only after it receives its required inputs).&lt;/p&gt;&#10;&#10;&lt;p&gt;The SDF Director is very efficient and will not tax system resources with overhead. However, this efficiency requires that certain conditions be met, namely that the data consumption and production rate of each actor in an SDF workflow be constant and declared. If an actor reads one piece of data and calculates and outputs a single result, it must always read and output a single token of data. This data rate cannot change during workflow execution and, in general, workflows that require dynamic scheduling and/or flow control cannot use this director. Additionally, the SDF Director has no understanding of passing time (at least by default), and actors that depend on a notion of time may not work as expected. For example, a TimedPlotter actor will plot all values at time zero when used in SDF. &lt;/p&gt;&#10;&#10;&lt;p&gt;By default, the SDF Director requires that all actors in its workflow be connected. Otherwise, the director cannot account for concurrency between disconnected workflow parts. Usually, a PN Director should be used for workflows that contain disconnected actors; however, the SDF Director's allowDisconnectedGraphs parameter may also be set to true. The SDF Director will then schedule each disconnected &quot;island&quot; independently. The director cannot infer the sequential relationship between disconnected actors (i.e., nothing forces the director to finish executing all actors on one island before firing actors on another). However, the order of execution within each island should be correct. Usually, disconnected graphs in an SDF model indicate an error.&lt;/p&gt;&#10; &#10;&lt;p&gt;Because SDF Directors schedule actors to fire only after they receive their inputs, workflows that require loops (feeding an actor's output back into its input port for further processing) can cause &quot;deadlock&quot; errors. The deadlock errors occur because the actor depends on its own output value as an initial input. To fix this problem, use a SampleDelay actor to generate and inject an initial input value into the workflow.&lt;/p&gt;&#10;&#10;&lt;p&gt;The SDF Director determines the order in which actors execute and how many times each actor needs to be fired to complete a single iteration of the workflow. This schedule is calculated BEFORE the director begins to iterate the workflow. Because the SDF Director calculates a schedule in advance, it is quite efficient. However, SDF workflows must be static. In other words, the same number of tokens must be consumed/produced at every iteration of the workflow. Workflows that require dynamic control structures, such as a BooleanSwitch actor that sends output on one of two ports depending on the value of a 'control', cannot be used with an SDF Director because the number of tokens on each output can change for each execution.&lt;/p&gt;&#10;&#10;&lt;p&gt;Unless otherwise specified, the SDF Director assumes that each actor consumes and produces exactly one token per channel on each firing. Actors that do not follow the one-token-per-channel firing convention (e.g., Repeat or Ramp) must declare the number of tokens they produce or consume via the appropriate parameters. &lt;/p&gt;&#10;&#10;&lt;p&gt;The number of times a workflow is iterated is controlled by the director's iterations parameter. Since Kepler 2.4, this parameter is set to &quot;AUTO&quot; by default. The director will run the workflow once when it is placed in the top level workflow. When it is placed in a composite actor, the director will keep running the sub-workflow inside of the composite actor until the top level director tells it to stop. In other words, &quot;AUTO&quot; means its value will be &quot;1&quot; when it is placed in the top level workflow, and will be &quot;UNBOUNDED&quot; when it is placed in a composite actor. This default value works for most cases. You can also select &quot;UNBOUNDED&quot; or specify &quot;0&quot; for this parameter, which means the workflow will iterate forever. Concrete numbers can be specified here too for the actual number of times the director should execute the workflow. &lt;/p&gt;&#10;&#10;&lt;p&gt;The amount of data processed by an SDF workflow is a function of both the number of times the workflow iterates and the value of the director's vectorizationFactor parameter. The vectorizationFactor is used to increase the efficiency of a workflow by increasing the number of times actors fire each time the workflow iterates. If the parameter is set to a positive integer (other than 1), the director will fire each actor the specified number of times more than normal. The default is 1, indicating that no vectorization should be performed. Keep in mind that changing the vectorizationFactor parameter changes the meaning of a nested SDF workflow and may cause deadlock in a workflow that uses it. &lt;/p&gt;&#10;&#10;&lt;p&gt;The SDF Director has several advanced parameters that are generally only relevant when an SDF workflow contains composite components. In most cases the period, timeResolution, synchronizeToRealTime, allowRateChanges, timeResolution, and constrainBufferSizes parameters can be left at their default values.&lt;/p&gt;&#10;&#10;&lt;p&gt;For more information about the SDF Director, see the Ptolemy documentation (http://ptolemy.eecs.berkeley.edu/papers/05/ptIIdesign3-domains/ptIIdesign3-domains.pdf).&lt;/p&gt;&#10;&#10;</configure></property>
+<property name="prop:allowDisconnectedGraphs" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>Specify whether to allow disconnected actors in the workflow (by default, all actors are required to be connected). If disconnected actors are permitted, the SDF Director will schedule each disconnected 'island' independently. Nothing &quot;forces&quot; the director to finish executing all actors on one island before firing actors on another. However, the order of execution within each island should be correct. Usually, disconnected graphs in an SDF workflow indicate an error.</configure></property>
+<property name="prop:allowRateChanges" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>Specify whether dynamic rate changes are permitted or not. By default, rate changes are not permitted, and the director will perform a check to disallow such workflows. If the parameter is selected, then workflows that require rate parameters to be modified during execution are valid, and the SDF Director will dynamically compute a new schedule at runtime. This is an advanced parameter that can usually be left at its default value.</configure></property>
+<property name="prop:timeResolution" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>The time precision used by this director. All time values are rounded to the nearest multiple of this number. The value is a double that defaults to &quot;1E-10&quot; (which is 10-10). This is an advanced parameter that can usually be left at its default value.</configure></property>
+<property name="prop:constrainBufferSizes" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>Specify whether buffer sizes are fixed. By default, buffers are fixed, and attempts to write to the buffer that cause the buffer to exceed its scheduled size result in an error. This is an advanced parameter that can usually be left at its default value.</configure></property>
+<property name="prop:iterations" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>Specify the number of times a workflow is iterated. Since Kepler 2.4, this parameter is set to &quot;AUTO&quot; by default. The director will run the workflow once when it is placed in the top level workflow. When it is placed in a composite actor, the director will keep running the sub-workflow inside of the composite actor until the top level director tells it to stop. In other words, &quot;AUTO&quot; means its value will be &quot;1&quot; when it is placed in the top level workflow, and will be &quot;UNBOUNDED&quot; when it is placed in a composite actor. This default value works for most cases. You can also select &quot;UNBOUNDED&quot; or specify &quot;0&quot; for this parameter, which means the workflow will iterate forever. Concrete numbers can be specified here too for the actual number of times the director should execute the workflow. </configure></property>
+<property name="prop:vectorizationFactor" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>The vectorizationFactor is used to increase the efficiency of a workflow by increasing the number of times actors fire each time the workflow iterates. If the parameter is set to a positive integer (other than 1), the director will fire each actor the specified number of times more than normal. The default is 1, indicating that no vectorization should be performed. Keep in mind that changing the vectorizationFactor parameter changes the meaning of a nested SDF workflow and may cause deadlock in a workflow that uses it. </configure></property>
+<property name="prop:synchronizeToRealTime" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>Specify whether the execution should synchronize to real time or not. By default, the director does not synchronize to real time. If synchronize is selected, the director will only process the workflow when elapsed real time matches the product of the period parameter and the iteration count. Note: if the period parameter has a value of 0.0 (the default), then selecting this parameter has no effect. This is an advanced parameter that can usually be left at its default value.</configure></property>
+<property name="prop:period" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>The time period of each iteration. The value is a double that defaults to 0.0, which means that the director does not increment workflow time. If the value greater than 0.0, the actor will increment workflow time each time it fires. This is an advanced parameter that can usually be left at its default value. </configure></property>
+</property>        <property name="entityId" class="org.kepler.moml.NamedObjId" value="urn:lsid:kepler-project.org/ns/:79342:77:2">
+        </property>
+        <property name="class" class="ptolemy.kernel.util.StringAttribute" value="ptolemy.domains.sdf.kernel.SDFDirector">
+            <property name="id" class="ptolemy.kernel.util.StringAttribute" value="urn:lsid:kepler-project.org:directorclass:1:2">
+            </property>
+        </property>
+        <property name="semanticType00" class="org.kepler.sms.SemanticType" value="urn:lsid:localhost:onto:1:1#Director">
+        </property>
+        <property name="semanticType11" class="org.kepler.sms.SemanticType" value="urn:lsid:localhost:onto:2:1#Director">
+        </property>
+        <property name="_location" class="ptolemy.kernel.util.Location" value="{130, 125}">
+        </property>
+        <property name="derivedFrom" class="org.kepler.moml.NamedObjIdReferralList" value="urn:lsid:kepler-project.org:director:1:2">
+        </property>
+    </property>
+    <property name="_windowProperties" class="ptolemy.actor.gui.WindowPropertiesAttribute" value="{bounds={138, 23, 1163, 873}, maximized=false}">
+    </property>
+    <property name="_vergilSize" class="ptolemy.actor.gui.SizeAttribute" value="[843, 735]">
+    </property>
+    <property name="_vergilZoomFactor" class="ptolemy.data.expr.ExpertParameter" value="1.0">
+    </property>
+    <property name="_vergilCenter" class="ptolemy.data.expr.ExpertParameter" value="{411.5, 357.5}">
+    </property>
+    <entity name="ColtChiSquare" class="ptolemy.actor.lib.colt.ColtChiSquare">
+        <property name="freedom" class="ptolemy.actor.parameters.PortParameter" value="1.0">
+        </property>
+        <property name="seed" class="ptolemy.actor.parameters.SharedParameter" value="0L">
+        </property>
+        <property name="privateSeed" class="ptolemy.data.expr.Parameter" value="">
+        </property>
+        <property name="resetOnEachRun" class="ptolemy.actor.parameters.SharedParameter" value="false">
+        </property>
+        <property name="generatorClass" class="ptolemy.actor.parameters.SharedParameter" value="DRand">
+        </property>
+<property name="KeplerDocumentation" class="ptolemy.vergil.basic.KeplerDocumentationAttribute">
+<property name="description" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>null</configure></property>
+<property name="author" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>David Bauer and Kostas Oikonomou</configure></property>
+<property name="version" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>$Id: ColtChiSquare.java 57040 2010-01-27 20:52:32Z cxh $</configure></property>
+<property name="userLevelDocumentation" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>&#10;Produce a random sequence with a ChiSquare distribution.  On each&#10; iteration, a new random number is produced.  The output port is of&#10; type DoubleToken.  The values that are generated are independent&#10; and identically distributed with the freedom and the standard&#10; deviation given by parameters.  In addition, the seed can be&#10; specified as a parameter to control the sequence that is generated.&#10;&#10; &lt;p&gt; This actor instantiates a&#10; &lt;a href=&quot;http://hoschek.home.cern.ch/hoschek/colt/V1.0.3/doc/cern/jet/random/ChiSquare.html&quot;&gt;cern.jet.random.ChiSquare&lt;/a&gt; object with&#10; freedom argument set to 1.0.&#10;&#10; The Chi Square Distribution is&#10; &lt;blockquote&gt;&#10; A special case of the Gamma distribution.&#10; &lt;p&gt;&#10; &lt;tt&gt;p(x) = (1/g(f/2)) * (x/2)^(f/2-1) * exp(-x/2)&lt;/tt&gt; with &lt;tt&gt;g(a)&lt;/tt&gt; being the gamma function and &lt;tt&gt;f&lt;/tt&gt; being the degrees of freedom.&#10; &lt;/p&gt;&lt;p&gt;&#10; Valid parameter ranges: &lt;tt&gt;freedom &amp;gt; 0&lt;/tt&gt;.&#10; &lt;/blockquote&gt;&#10;&#10; The above description of Chi Square is&#10; &lt;a href=&quot;doc-files/colt-copyright.htm&quot;&gt;copyrighted&lt;/a&gt;.&#10;&#10; &lt;p&gt;A definition of the ChiSquare distribution can be found at&#10; &lt;a href=&quot;http://www.cern.ch/RD11/rkb/AN16pp/node31.html#SECTION000310000000000000000&quot;&gt;&lt;code&gt;http://www.cern.ch/RD11/rkb/AN16pp/node31.html#SECTION000310000000000000000&lt;/code&gt;&lt;/a&gt;</configure></property>
+<property name="port:output" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>The output port.  The type of this port is unspecified.  Derived classes may set it.</configure></property>
+<property name="port:trigger" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>The trigger port.  The type of this port is undeclared, meaning  that it will resolve to any data type.</configure></property>
+<property name="port:freedom" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>freedom.  This has type double with default value 1.0.</configure></property>
+<property name="prop:seed" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>The seed that controls the random number generation.  This is a shared parameter, meaning that all instances of  RandomSource or derived classes in the same model share the  same value.  A seed of zero is interpreted to mean that no seed is specified,  which means that each execution of the model could result in  distinct data. For the value 0, the seed is set to  System.currentTimeMillis() + hashCode(), which means that  with extremely high probability, two distinct actors will have  distinct seeds.  However, current time may not have enough  resolution to ensure that two subsequent executions of the  same model have distinct seeds. For a value other than zero,  the seed is set to that value plus the hashCode() of the  full name of the actor. This means that with high probability,  two distinct actors will have distinct, but repeatable seeds.  This parameter contains a LongToken, initially with value 0.</configure></property>
+<property name="prop:generatorClass" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>The low-level random number generator (RNG) class name.  This is a string that defaults to &quot;DRand&quot;.  Below are possible values for this parameter and links  to pages that define the meaning of the parameter.  This is a &quot;shared parameter&quot;, which means that  changing this parameter in any one actor will cause  a similar change to be applied to all other Colt  actors within the same top level (unless this is in  a library).  &lt;menu&gt;  &lt;li&gt;&lt;code&gt;&quot;DRand&quot;&lt;/code&gt;  (&lt;a href=&quot;http://hoschek.home.cern.ch/hoschek/colt/V1.0.3/doc/cern/jet/random/engine/DRand.html#in_browser&quot;&gt;Definition&lt;/a&gt;)  &lt;li&gt;&lt;code&gt;&quot;MersenneTwister (MT19937)&quot;&lt;/code&gt;  (&lt;a href=&quot;http://hoschek.home.cern.ch/hoschek/colt/V1.0.3/doc/cern/jet/random/engine/MersenneTwister.html#in_browser&quot;&gt;Definition&lt;/a&gt;)  &lt;li&gt;&lt;code&gt;&quot;Ranecu&quot;&quot;&lt;/code&gt;  (&lt;a href=&quot;http://hoschek.home.cern.ch/hoschek/colt/V1.0.3/doc/edu/cornell/lassp/houle/RngPack/Ranecu.html#in_browser&quot;&gt;Definition&lt;/a&gt;)  &lt;li&gt;&lt;code&gt;&quot;Ranlux&quot;&lt;/code&gt;  (&lt;a href=&quot;http://hoschek.home.cern.ch/hoschek/colt/V1.0.3/doc/cern/jet/random/engine/Ranlux.html#in_browser&quot;&gt;Definition&lt;/a&gt;)  &lt;li&gt;&lt;code&gt;&quot;Ranmar&quot;&lt;/code&gt;  (&lt;a href=&quot;http://hoschek.home.cern.ch/hoschek/colt/V1.0.3/doc/cern/jet/random/engine/Ranmar.html#in_browser&quot;&gt;Definition&lt;/a&gt;)  &lt;/menu&gt;</configure></property>
+<property name="prop:privateSeed" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>This private seed overrides the shared seed parameter to specify a   particular seed rather than using System.currentTimeMillis() or  hashCode() to compute the seed value.     By default, this parameter is empty, which means that the shared seed  parameter is used.    WARNING: It is up to the user to make sure that different seed  values are used in different random number generators.</configure></property>
+<property name="prop:freedom" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>freedom.  This has type double with default value 1.0.</configure></property>
+<property name="prop:resetOnEachRun" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>If true, this parameter specifies that the random number  generator should be reset on each run of the model (in  the initialize() method). It is a boolean that defaults  to false. This is a shared parameter, meaning that changing  it somewhere in the model causes it to be changed everywhere  in the model.</configure></property>
+</property>        <property name="entityId" class="org.kepler.moml.NamedObjId" value="urn:lsid:kepler-project.org:actor:634:1">
+        </property>
+        <property name="class" class="ptolemy.kernel.util.StringAttribute" value="ptolemy.actor.lib.colt.ColtChiSquare">
+            <property name="id" class="ptolemy.kernel.util.StringAttribute" value="null">
+            </property>
+        </property>
+        <property name="semanticType00" class="org.kepler.sms.SemanticType" value="urn:lsid:localhost:onto:2:1#RandomNumberOperation">
+        </property>
+        <property name="_location" class="ptolemy.kernel.util.Location" value="[120.0, 215.0]">
+        </property>
+        <port name="trigger" class="ptolemy.actor.TypedIOPort">
+            <property name="input"/>
+            <property name="multiport"/>
+            <property name="_showName" class="ptolemy.data.expr.SingletonParameter" value="true">
+            </property>
+        </port>
+        <port name="freedom" class="ptolemy.actor.parameters.ParameterPort">
+            <property name="input"/>
+            <property name="_showName" class="ptolemy.data.expr.SingletonParameter" value="true">
+            </property>
+        </port>
+    </entity>
+    <entity name="Sequence Plotter" class="ptolemy.actor.lib.gui.SequencePlotter">
+        <property name="fillOnWrapup" class="ptolemy.data.expr.Parameter" value="true">
+        </property>
+        <property name="automaticRescale" class="ptolemy.data.expr.Parameter" value="false">
+        </property>
+        <property name="_windowProperties" class="ptolemy.actor.gui.WindowPropertiesAttribute" value="{bounds={806, 389, 500, 322}, maximized=false}">
+        </property>
+        <property name="_plotSize" class="ptolemy.actor.gui.SizeAttribute" value="[500, 300]">
+        </property>
+        <property name="startingDataset" class="ptolemy.data.expr.Parameter" value="0">
+        </property>
+        <property name="xInit" class="ptolemy.data.expr.Parameter" value="0.0">
+        </property>
+        <property name="xUnit" class="ptolemy.data.expr.Parameter" value="1.0">
+        </property>
+<property name="KeplerDocumentation" class="ptolemy.vergil.basic.KeplerDocumentationAttribute">
+<property name="description" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>null</configure></property>
+<property name="author" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>Edward A. Lee, Bart Kienhuis</configure></property>
+<property name="version" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>null</configure></property>
+<property name="userLevelDocumentation" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>&lt;p&gt;The SequencePlotter plots received data and displays the graph. The actor reads one or more sequences of doubles via its input multiport and plots each received sequence as a separate data set. By default, the actor updates the display each time it iterates.&lt;/p&gt;&#10;&#10;&lt;p&gt;Specify the scale and starting position of the x-axis with the xUnit and xInit parameters. By default, the x-axis begins at 0 and the increment between samples is 1. &lt;/p&gt;&#10;&#10;&lt;p&gt;Note: updating the display can be costly in terms of system resources. Specify the number of actor iterations that should pass between display updates with the iterationsPerUpdate parameter. For example, if iterationsPerUpdate = 2, then every second time the actor fires, it will update the display (i.e., the actor will update its display on the first firing, the third, the fifth, etc.) The actor will consume its inputs on every firing, regardless of the value of the iterationsPerUpdate parameter.&lt;/p&gt;</configure></property>
+<property name="port:input" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>A multiport that accepts one or more sequences of doubles.</configure></property>
+<property name="prop:xInit" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>The start point of the X-axis.</configure></property>
+<property name="prop:fillOnWrapup" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>Specify whether or not to rescale the plot so that all data is visible. By default, the actor scales the plot to fill the display area.</configure></property>
+<property name="prop:startingDataset" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>The starting dataset number to which data is plotted. The value must be a non-negative integer. The default is 0.</configure></property>
+<property name="prop:legend" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>Annotations that will be displayed with the graph. Specify a comma-separated list of values that correspond to the input data sets (e.g., rainfall, temperature, elevation).</configure></property>
+<property name="prop:iterationsPerUpdate" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>The number of actor iterations that should pass between display updates. The value must be a non-negative integer. The default value is 1.</configure></property>
+<property name="prop:xUnit" class="ptolemy.kernel.util.ConfigurableAttribute"><configure>The increment along the X-axis.</configure></property>
+</property>        <property name="entityId" class="org.kepler.moml.NamedObjId" value="urn:lsid:kepler-project.org:actor:18:1">
+        </property>
+        <property name="class" class="ptolemy.kernel.util.StringAttribute" value="ptolemy.actor.lib.gui.SequencePlotter">
+            <property name="id" class="ptolemy.kernel.util.StringAttribute" value="urn:lsid:kepler-project.org:class:894:1">
+            </property>
+        </property>
+        <property name="semanticType00" class="org.kepler.sms.SemanticType" value="urn:lsid:localhost:onto:1:1#Plotter">
+        </property>
+        <property name="semanticType11" class="org.kepler.sms.SemanticType" value="urn:lsid:localhost:onto:2:1#GraphicalOutput">
+        </property>
+        <property name="_location" class="ptolemy.kernel.util.Location" value="[275.0, 215.0]">
+        </property>
+        <configure>
+<?plotml <!DOCTYPE plot PUBLIC "-//UC Berkeley//DTD PlotML 1//EN"
+"http://ptolemy.eecs.berkeley.edu/xml/dtd/PlotML_1.dtd">
+<plot>
+<title>Sequence Plotter</title>
+<xRange min="0.0" max="99.0"/>
+<yRange min="9.185751167551112E-5" max="8.822826812247909"/>
+</plot>?>
+        </configure>
+    </entity>
+    <relation name="relation" class="ptolemy.actor.TypedIORelation">
+    </relation>
+    <link port="ColtChiSquare.output" relation="relation"/>
+    <link port="Sequence Plotter.input" relation="relation"/>
+</entity>
